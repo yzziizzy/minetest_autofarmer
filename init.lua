@@ -1,6 +1,6 @@
 local modpath = minetest.get_modpath("autofarmer")
 
-dofile(modpath.."/harvester.lua")
+--dofile(modpath.."/harvester.lua")
 dofile(modpath.."/planter.lua")
 -- watering pipes
 -- harvester
