@@ -71,7 +71,23 @@ local seeds_nodes = {
 	["farming_plus:potato_seed"]="farming_plus:potatoe_1",
 	["farming_plus:tomato_seed"]="farming_plus:tomato_1",
 	["farming_plus:orange_seed"]="farming_plus:orange_1",
-	["farming_plus:carrot_seed"]="farming_plus:carrot_1"
+	["farming_plus:carrot_seed"]="farming_plus:carrot_1",
+	
+	["default:sapling"]="default:sapling",
+	["moretrees:birch_sapling"]="moretrees:birch_sapling",
+	["moretrees:spruce_sapling"]="moretrees:spruce_sapling",
+	["moretrees:fir_sapling"]="moretrees:fir_sapling",
+	["moretrees:jungletree_sapling"]="moretrees:jungletree_sapling",
+	["default:junglesapling"]="default:junglesapling",
+	["moretrees:beech_sapling"]="moretrees:beech_sapling",
+	["moretrees:apple_tree_sapling"]="moretrees:apple_tree_sapling",
+	["moretrees:oak_sapling"]="moretrees:oak_sapling",
+	["moretrees:sequoia_sapling"]="moretrees:sequoia_sapling",
+	["moretrees:palm_sapling"]="moretrees:palm_sapling",
+	["moretrees:pine_sapling"]="moretrees:pine_sapling",
+	["moretrees:willow_sapling"]="moretrees:willow_sapling",
+	["moretrees:rubber_tree_sapling"]="moretrees:rubber_tree_sapling",
+
 }
 
 
