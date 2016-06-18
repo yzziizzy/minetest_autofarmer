@@ -1,10 +1,14 @@
- 
+
+-- EDITED BY HarrierJack
+-- fixed syntax + spelling errors
+-- fixed old texture references
+
 
 minetest.register_craft({
 	recipe = {
-		{"default:dirt", "default:sapling",           "default:dirt"},
-		{"default:tinblock", "technic:motor",    "default:tinblock"},
-		{"technic:MV_cable", "default:tinblock", "pipeworks:tube"}},
+		{"default:dirt", "default:dirt",           "default:dirt"},
+		{"moreores:tin_block", "technic:motor",    "moreores:tin_block"},
+		{"technic:MV_cable", "moreores:tin_block", "pipeworks:pipe_1_empty"}},
 	output = "autofarmer:harvester",
 })
 -- minetest.register_craft({
@@ -19,16 +23,14 @@ local harvester_length = 30 -- How long the row will be
 local harvester_row_width      = 1 -- how many blocks each way from the center. 1 = 3 block width, 2 = 5 block width.
 
 local harvester_dig_nodes = {
-	{"farming:weed" = true },
-	{"farming:cotton_8" = true },
-	{"farming:cheat_8" = true },
-	{"farming:carrot" = true },
-	{"farming:rhubarb" = true },
-	{"farming:potatoe" = true },
-	{"farming:tomato" = true },
-	{"farming:strawberry" = true },
-	{"farming:potatoe" = true },
-	
+	["farming:weed"]=true,
+	["farming:cotton_8"]=true,
+	["farming:cheat_8"] = true,
+	["farming:carrot"] = true,
+	["farming:rhubarb"] = true,
+	["farming:tomato"] = true,
+	["farming:strawberries"] = true,
+	["farming:potato"] = true }
 
 
 local function get_harvester_formspec(size)
@@ -60,7 +62,7 @@ local function harvester_receive_fields(pos, formname, fields, sender)
 	end
 end
 
-local function get_harvester_start(pos, size)
+local function get_harvester_center(pos, size)
 	local node     = minetest.get_node(pos)
 	local back_dir = minetest.facedir_to_dir(node.param2)
 	local relative_center = vector.multiply(back_dir, size + 1)
@@ -154,11 +156,11 @@ local function send_items(items, pos, node)
 	end
 end
 
-minetest.register_node("technic:harvester", {
-	description = "Quarry",
-	tiles = {"default_tin_block.png", "default_tin_block.png",
-	         "default_tin_block.png", "default_tin_block.png",
-	         "default_tin_block.png^default_tool_steelhoe.png", "default_tin_block.png"},
+minetest.register_node("autofarmer:harvester", {
+	description = "MV Harvester",
+	tiles = {"moreores_tin_block.png", "moreores_tin_block.png",
+	         "moreores_tin_block.png", "moreores_tin_block.png",
+	         "moreores_tin_block.png^farming_tool_steelhoe.png", "moreores_tin_block.png"},
 	paramtype2 = "facedir",
 	groups = {cracky=2, tubedevice=1},
 	tube = {
@@ -175,7 +177,7 @@ minetest.register_node("technic:harvester", {
 	after_place_node = function(pos, placer, itemstack)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name())
-		tube_scanforobjects(pos)
+		-- tube_scanforobjects(pos)
 	end,
 	after_dig_node = tube_scanforobjects,
 	on_receive_fields = harvester_receive_fields,
@@ -193,7 +195,7 @@ minetest.register_abm({
 		local center = get_harvester_center(pos, size)
 		local dig_y = meta:get_int("dig_y")
 
-		technic.switching_station_timeout_count(pos, "MV")
+		-- technic.switching_station_timeout_count(pos, "MV")
 
 		if meta:get_int("enabled") == 0 then
 			meta:set_string("infotext", "Harvester Disabled")
