@@ -1,8 +1,10 @@
-minetest_autofarmer
+(WIP) minetest_autofarmer
 ================
+
 by Izzy
 Props to RealBadAngel, VanessaE. Lots of code "borrowed" from them.
 
+Edit and fixes by HarrierJack borrowing more code..
 
 Introduction:
 Adds automatic farming machines to minetest. They run on MV power from technic, and integrate with pipeworks.

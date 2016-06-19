@@ -4,20 +4,7 @@
 -- fixed old texture references
 
 
-minetest.register_craft({
-	recipe = {
-		{"default:dirt", "default:dirt",           "default:dirt"},
-		{"moreores:tin_block", "technic:motor",    "moreores:tin_block"},
-		{"technic:MV_cable", "moreores:tin_block", "pipeworks:pipe_1_empty"}},
-	output = "autofarmer:harvester",
-})
--- minetest.register_craft({
--- 	recipe = {
--- 		{"default:dirt", "default:sapling",           "default:dirt"},
--- 		{"default:bronzeblock", "technic:motor",    "default:bronzeblock"},
--- 		{"default:bronzeblock", "technic:MV_cable", "default:bronzeblock"}},
--- 	output = "autofarmer:planter",
--- })
+
 
 local harvester_length = 30 -- How long the row will be
 local harvester_row_width      = 1 -- how many blocks each way from the center. 1 = 3 block width, 2 = 5 block width.
