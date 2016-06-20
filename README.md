@@ -14,9 +14,13 @@ The planter will put seeds from the normal game plants (wheat etc.) and plants w
 (TODO optional?): standalone version not requiring moreores/mesecons/pipeworks/technic (although those mods are AWESOME and RECOMMENDED)
 
 TODO: 	- finetune planter
+	
 	- make technic/mesecons/pipeworks optional?
+
 	- fix/create harvester
+
 	- tweak craft / default settings (feedback appreciated)
+
 	- test/squash/enjoy
 
 	- ohyeah, some pretty textures could be nice.. :S
