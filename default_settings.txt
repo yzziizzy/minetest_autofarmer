@@ -1,0 +1,75 @@
+-- configurable settings
+
+-- LV planter settings
+autofarmer.LV_planter_demand = 6000
+autofarmer.LV_planter_width_side = 2
+autofarmer.LV_planter_length = 6
+
+-- MV planter settings
+autofarmer.MV_planter_demand = 11000
+autofarmer.MV_planter_width_side = 3
+autofarmer.MV_planter_length = 15
+
+-- HV planter settings
+autofarmer.HV_planter_demand = 22000
+-- farm size is adaptable ingame
+
+
+
+
+-- add new/custom mod plants below, keep the syntax [""] = "",
+-- inluding the comma
+-- names should be the following: ["full-name-in-game"] = "modname:plantname_1"
+-- note to add _1 to the plantname and the texture must exist with that mod following farming_plus/redo rules
+autofarmer.seeds_nodes = {
+	["farming:seed_wheat"]= "farming:wheat_1",
+	["farming:seed_cotton"]= "farming:cotton_1",
+	["farming:seed_barley"]= "farming:barley_1",
+	
+	-- old deprecated?/legacy
+	["farming:pumpkin_seed"]= "farming:pumpkin_1",
+	["farming:rhubarb_seed"]= "farming:rhubarb_1",
+	["farming:strawberry_seed"]="farming:strawberry_1",
+	["farming:potato_seed"]="farming:potato_1",
+	["farming:tomato_seed"]="farming:tomato_1",
+	["farming:orange_seed"]="farming:orange_1",
+	["farming:carrot_seed"]="farming:carrot_1",
+
+	-- added hemp
+	["hemp:seed_hemp"]="hemp:hemp_1",
+	
+	-- farming_plus changes?
+	["farming:blueberries"]="farming:blueberry_1",
+	["farming:cocoa_sapling"]="farming:cocoa_sapling",
+	["farming:coffee_beans"]="farming:coffee_1",
+	["farming:corn"]="farming:corn_1",
+	["farming:cucumber"]="farming:cucumber_1",
+	["farming:carrot"]="farming:carrot_1",
+	["farming:grapes"]="farming:grapes_1",
+	["farming:melon_slice"]="farming:melon_1",
+	["farming:pumpkin"]="farming:pumpkin_1",
+	["farming:raspberries"]="farming:raspberry_1",
+	["farming:rhubarb"]="farming:rhubarb_1",
+	["farming:tomato"]="farming:tomato_1",
+	["farming:potato"]="farming:potato_1",
+	
+	["default:sapling"]="default:sapling",
+	["moretrees:birch_sapling"]="moretrees:birch_sapling",
+	["moretrees:spruce_sapling"]="moretrees:spruce_sapling",
+	["moretrees:fir_sapling"]="moretrees:fir_sapling",
+	["moretrees:jungletree_sapling"]="moretrees:jungletree_sapling",
+	["default:junglesapling"]="default:junglesapling",
+	["moretrees:beech_sapling"]="moretrees:beech_sapling",
+	["moretrees:apple_tree_sapling"]="moretrees:apple_tree_sapling",
+	["moretrees:oak_sapling"]="moretrees:oak_sapling",
+	["moretrees:sequoia_sapling"]="moretrees:sequoia_sapling",
+	["moretrees:palm_sapling"]="moretrees:palm_sapling",
+	["moretrees:pine_sapling"]="moretrees:pine_sapling",
+	["moretrees:willow_sapling"]="moretrees:willow_sapling",
+	["moretrees:rubber_tree_sapling"]="moretrees:rubber_tree_sapling",
+
+
+
+}
+
+-- END OF SEED_NODES
