@@ -3,13 +3,6 @@
 -- borrowed function from technic
 local S = technic.getter
 
--- borrowed function from technic
-local S = technic.getter
-
--- fixed variables EU demand, farm size
-local planter_demand = 13000
-local farm_width_side = 3
-local farm_length = 15 
 
 -- original function used in get_planter_region(pos,size)
 -- [x][z] -- y assumed to be 0
@@ -170,122 +163,6 @@ local function planter_run(pos, node)
 	-- initialize cache for the case we load an older world
 	--inv:set_size("cache", 12)
 	
-<<<<<<< HEAD
-	["default:sapling"]="default:sapling",
-	["moretrees:birch_sapling"]="moretrees:birch_sapling",
-	["moretrees:spruce_sapling"]="moretrees:spruce_sapling",
-	["moretrees:fir_sapling"]="moretrees:fir_sapling",
-	["moretrees:jungletree_sapling"]="moretrees:jungletree_sapling",
-	["default:junglesapling"]="default:junglesapling",
-	["moretrees:beech_sapling"]="moretrees:beech_sapling",
-	["moretrees:apple_tree_sapling"]="moretrees:apple_tree_sapling",
-	["moretrees:oak_sapling"]="moretrees:oak_sapling",
-	["moretrees:sequoia_sapling"]="moretrees:sequoia_sapling",
-	["moretrees:palm_sapling"]="moretrees:palm_sapling",
-	["moretrees:pine_sapling"]="moretrees:pine_sapling",
-	["moretrees:willow_sapling"]="moretrees:willow_sapling",
-	["moretrees:rubber_tree_sapling"]="moretrees:rubber_tree_sapling",
-
-
-}
-
-
-
-local function plant_seed(pos, node)
-	local meta  = minetest.get_meta(pos)
-	local inv   = meta:get_inventory()
-	local p1,p2 = get_planter_region(pos, size)
-
-	local vm = VoxelManip()
-	local e1, e2 = vm:read_from_map(p1, p2)
-	local area = VoxelArea:new({MinEdge=e1, MaxEdge=e2})
-	local data = vm:get_data()
-
-	local plantp = find_next_plant_pos(data, area, p1, p2)
-
-	if plantp == nil then
--- 			print("no planting spots available")
-		-- deactivate planter
-		-- minetest.swap_node(pos, {name = "autofarmer:planter" })
-		-- EDIT: keep running in this case as long as there is power
-		return
-	end
-
-	-- get seed from inv
-	local plantname = nil
-	local stackindex = nil
-
-	localinv = inv:get_list("src")
-	if localinv ~= nil then 
-		for key,value in pairs(localinv) do 
-			plantname = seeds_nodes[value:get_name()]
-			stackindex = key
-			if plantname ~= nil then break end
-		end
-	else
-		return
-	end
-
-
-	if plantname == nil then
-		-- no seeds left
-		return
-	end
-
-	-- set plant
-	minetest.env:set_node(plantp, {name=plantname})
-
-	-- decrement seed stack
-	local src = inv:get_stack("src", stackindex)
-	src:take_item()
-	inv:set_stack("src", stackindex, src)
-
-end
-
-
-local function set_planter_demand(meta)
-	local machine_name = S("%s Planter"):format("MV")
-	if meta:get_int("enabled") == 0 then
-		meta:set_string("infotext", S(meta:get_int("purge_on") == 1 and "%s purging cache" or "%s Disabled"):format(machine_name))
-		meta:set_int("MV_EU_demand", 0)
---	elseif meta:get_int("dug") == diameter*diameter * (quarry_dig_above_nodes+1+quarry_max_depth) then
-	--	meta:set_string("infotext", S("%s Finished"):format(machine_name))
-		--meta:set_int("MV_EU_demand", 0)
-	else
-		meta:set_string("infotext", S(meta:get_int("MV_EU_input") >= planter_demand and "%s Active" or "%s Unpowered"):format(machine_name))
-		meta:set_int("MV_EU_demand", planter_demand)
-	end
-end
-
-
-
-local function planter_run(pos, node)	
-	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-	-- initialize cache for the case we load an older world
-	--inv:set_size("cache", 12)
-
-	if meta:get_int("enabled") and meta:get_int("MV_EU_input") >= planter_demand then
-		-- plant on plantable spot
-		plant_seed(pos, node)
-		
-	else 
-		-- dont do anything?
-		--meta:set_int("MV_EU_demand", 0)
-	end
-	
-	
-	set_planter_demand(meta)
-end
-
-
-
-minetest.register_node("autofarmer:planter", {
-	description = "MV Auto Planter",
-	tiles = {"technic_brass_block.png", "technic_brass_block.png",
-	         "technic_brass_block.png", "technic_brass_block.png",
-	         "technic_brass_block.png^farming_tool_steelhoe.png", "technic_brass_block.png"},
-=======
 	local prefix = meta:get_string("power_flag")
 	
 	if meta:get_int("enabled") and meta:get_int(prefix.."_EU_input") >= meta:get_int(prefix.."_EU_demand") then
@@ -383,7 +260,6 @@ minetest.register_node("autofarmer:mv_planter", {
 	tiles = {"default_bronze_block.png", "default_bronze_block.png",
 	         "default_bronze_block.png", "default_bronze_block.png",
 	         "default_bronze_block.png^farming_tool_bronzehoe.png", "default_bronze_block.png"},
->>>>>>> 283629fde2971e8da1fc10873f64ff531e5319cb
 	paramtype2 = "facedir",
 	groups = {cracky=2, tubedevice=1, tubedevice_receiver=1, technic_machine=1, technic_mv=1, mesecon_effector_off = 1, mesecon = 2},
 	connect_sides = {"bottom", "front", "left", "right"},
@@ -400,13 +276,6 @@ minetest.register_node("autofarmer:mv_planter", {
 		end,
 		connect_sides = {top = 1, front = 1, left = 1, right = 1},
 	},
-<<<<<<< HEAD
---	mesecons = {effector = {
---		action_on = function (pos, node)
---			minetest.swap_node(pos, {name = "autofarmer:planter_active" })
---		end
---	}},
-=======
 	mesecons = {effector = {
 		action_on = function (pos, node)
 			minetest.chat_send_all("toggle off")
@@ -421,16 +290,12 @@ minetest.register_node("autofarmer:mv_planter", {
 		end
 				
 	}},
->>>>>>> 283629fde2971e8da1fc10873f64ff531e5319cb
 	on_construct = function(pos)
 		local size = 8
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext", "MV Planter")
 		meta:set_string("formspec", "invsize[8,7;]list[current_name;src;2,0;4,2;]list[current_player;main;0,3;8,4;]")
-<<<<<<< HEAD
-=======
 		meta:set_string("power_flag", "MV")
->>>>>>> 283629fde2971e8da1fc10873f64ff531e5319cb
 		meta:set_int("enabled", 0)
 		set_planter_demand(meta)
 		local inv = meta:get_inventory()
@@ -448,16 +313,6 @@ minetest.register_node("autofarmer:mv_planter", {
 			return true
 		end
 	end,
-<<<<<<< HEAD
-	on_punch = function(pos) 
-		-- minetest.swap_node(pos, {name = "autofarmer:planter_active" })
-		minetest.chat_send_all("punch")
-		-- toggle on/off
-		local meta = minetest.get_meta(pos)
-		if meta:get_int("enabled") == 1 then
-			meta:set_int("enabled", 0)
-				minetest.chat_send_all("turn off")
-=======
 	after_place_node = function(pos, placer, itemstack)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name())
@@ -521,31 +376,16 @@ minetest.register_node("autofarmer:hv_planter", {
 			minetest.chat_send_player(player:get_player_name(),
 					"Machine cannot be removed because it is not empty")
 			return false
->>>>>>> 283629fde2971e8da1fc10873f64ff531e5319cb
 		else
-			meta:set_int("enabled", 1)
-				minetest.chat_send_all("turn on")
+			return true
 		end
 	end,
-	
 	after_place_node = function(pos, placer, itemstack)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name())
 		pipeworks.scan_for_tube_objects(pos)
 	end,
 	after_dig_node = pipeworks.scan_for_tube_objects,
-<<<<<<< HEAD
-	-- on_receive_fields = harvester_receive_fields,
-	technic_run = planter_run,
-})	
-	
-
-
-
-
-
-technic.register_machine("MV", "autofarmer:planter", technic.receiver)
-=======
 	technic_run = planter_run,
 })
 
@@ -554,4 +394,3 @@ technic.register_machine("MV", "autofarmer:planter", technic.receiver)
 technic.register_machine("LV", "autofarmer:lv_planter", technic.receiver)
 technic.register_machine("MV", "autofarmer:mv_planter", technic.receiver)
 technic.register_machine("LV", "autofarmer:hv_planter", technic.receiver)
->>>>>>> 283629fde2971e8da1fc10873f64ff531e5319cb

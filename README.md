@@ -4,26 +4,20 @@
 by Izzy
 Props to RealBadAngel, VanessaE. Lots of code "borrowed" from them.
 
-<<<<<<< HEAD
-Edit and fixes by HarrierJack borrowing more code..
-=======
 Edit and fixes by HarrierJack, borrowing even more code..
->>>>>>> 283629fde2971e8da1fc10873f64ff531e5319cb
 
 Introduction:
 Adds automatic farming machines to minetest. They run on LV/MV/HV power from technic, and integrate with pipeworks. 
 
-The planter will put seeds from the normal game plants (wheat etc.) and plants without seeds from farming_plus (farming redo?) onto available farmland in its front position. In case technic mod is available the higher the current level (LV/MV/HV) the bigger the farm.
+The planter will put seeds from the normal game plants (wheat etc.) and plants without seeds from farming_plus (farming redo?) onto available farmland in its front position. The higher the current level (LV/MV/HV) the bigger the farm.
 
-(TODO optional?): standalone version not requiring moreores/mesecons/pipeworks/technic (although those mods are AWESOME and RECOMMENDED)
 
-TODO: 	
-	- finetune planter
-	- make technic/mesecons/pipeworks optional?
+TODO: 	- finetune planter
+	- do something with water/pipes?
 	- fix/create harvester
 	- tweak craft / default settings (feedback appreciated)
 	- test/squash/enjoy
-	- ohyeah, some pretty textures could be nice.. :S
+	- ohyeah, some pretty textures would be nice.. :S
 
 How to install:
 TIP: It's usually better to rename the folder to 'autofarmer' removing the trailing 'minetest_'.
