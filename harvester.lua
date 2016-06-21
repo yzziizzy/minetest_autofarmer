@@ -5,30 +5,36 @@
 
 
 
+-- borrowed function from technic
+local S = technic.getter
+
 
 local harvester_length = 30 -- How long the row will be
 local harvester_row_width      = 1 -- how many blocks each way from the center. 1 = 3 block width, 2 = 5 block width.
 
-local harvester_dig_nodes = {
-	["farming:weed"]=true,
-	["farming:cotton_8"]=true,
-	["farming:cheat_8"] = true,
-	["farming:carrot"] = true,
-	["farming:rhubarb"] = true,
-	["farming:tomato"] = true,
-	["farming:strawberries"] = true,
-	["farming:potato"] = true }
+-- TEST
+local harvester_dig_above_nodes = 0
+local harvester_max_depth = 0
 
 
-local function get_harvester_formspec(size)
+local function get_label(meta)
+	if meta:get_int("enabled") == 1 then
+		return "Disable"
+	else return "Enable" end
+end
+
+
+local function get_harvester_formspec(size, label)
 	return "size[3,1.5]"..
 		"field[1,0.5;2,1;size;Radius;"..size.."]"..
-		"button[0,1;3,1;toggle;Enable/Disable]"
+		"button[0,1;3,1;toggle;"..label.."]"
 end
 
 local function harvester_receive_fields(pos, formname, fields, sender)
+	if fields.quit then return end
+	
 	local meta = minetest.get_meta(pos)
-	local size = tonumber(fields.size)
+	--local size = tonumber(fields.size)
 
 	if fields.toggle then
 		if meta:get_int("enabled") == 0 then
@@ -38,15 +44,29 @@ local function harvester_receive_fields(pos, formname, fields, sender)
 		end
 	end
 
-	-- Smallest size is 2. Anything less is asking for trouble.
-	-- Largest is 8. It is a matter of pratical node handling.
-	size = math.max(size, 2)
-	size = math.min(size, 8)
+	
+	if string.find(fields.size, "^[0-9]+$") then
+		local size = tonumber(fields.size)
 
-	if meta:get_int("size") ~= size then
-		meta:set_int("size", size)
-		meta:set_string("formspec", get_harvester_formspec(size))
+		if size < 100 then	
+			-- Smallest size is 2. Anything less is asking for trouble.
+			-- Largest is 8. It is a matter of pratical node handling.
+		--	size = math.max(size, 2)
+		--	size = math.min(size, 8)
+
+			if meta:get_int("size") ~= size then
+				meta:set_int("size", size)
+				meta:set_string("formspec", get_harvester_formspec(size, get_label(meta)))
+			end
+			
+			meta:set_string("formspec", get_harvester_formspec(size, get_label(meta)))
+		end	
+
 	end
+	
+	
+	
+	
 end
 
 local function get_harvester_center(pos, size)
@@ -72,24 +92,39 @@ end
 
 local function find_next_digpos(data, area, center, dig_y, size)
 	local c_air = minetest.get_content_id("air")
+	local c_test = minetest.get_content_id("farming:wheat_1")
 
 	for y = center.y + harvester_dig_above_nodes, dig_y - 1, -1 do
 	for z = center.z - size, center.z + size do
 	for x = center.x - size, center.x + size do
-		if data[area:index(x, y, z)] ~= c_air then
-			return vector.new(x, y, z)
+				
+				
+		local nname = minetest.get_name_from_content_id(data[area:index(x, y, z)])
+				
+		if autofarmer.harvester_dig_nodes[nname] then
+				-- harvest allowed
+				return vector.new(x, y, z)
 		end
+				
+				-- TODO CHECK FOR ALLOWED NODES
+		-- if data[area:index(x, y, z)] ~= c_air and data[area:index(x, y, z)] ~= c_test then
+			-- return vector.new(x, y, z)
+		--end
+				
+				
 	end
 	end
 	end
 end
 
-local function harvester_dig(pos, center, size)
+local function harvester_dig(pos, center)
 	local meta = minetest.get_meta(pos)
 	local drops = {}
 	local dig_y = meta:get_int("dig_y")
 	local owner = meta:get_int("owner")
-
+	local size = meta:get_int("size")
+	
+	
 	local vm = VoxelManip()
 	local p1 = vector.new(
 			center.x - size,
@@ -111,6 +146,7 @@ local function harvester_dig(pos, center, size)
 			return drops
 		end
 		if minetest.is_protected and minetest.is_protected(digpos, owner) then
+			-- TODO probably check since it will be turned on again after power check
 			meta:set_int("enabled", 0)
 			return
 		end
@@ -143,6 +179,54 @@ local function send_items(items, pos, node)
 	end
 end
 
+
+local function set_harvester_demand(meta)
+	local prefix = meta:get_string("power_flag")
+	local machine_name = S("%s Harvester"):format(prefix)
+	local harvester_demand
+	
+	-- get the right values for the right current
+	if prefix == "LV" then harvester_demand = autofarmer.LV_harvester_demand end
+	if prefix == "MV" then harvester_demand = autofarmer.MV_harvester_demand end
+	if prefix == "HV" then harvester_demand = autofarmer.HV_harvester_demand end
+	
+	if meta:get_int("enabled") == 0 then
+		meta:set_int(prefix.."_EU_demand", 0)
+		meta:set_string("infotext", S("%s Disabled"):format(machine_name))
+	else
+		meta:set_int(prefix.."_EU_demand", harvester_demand)
+		meta:set_string("infotext", S(meta:get_int(prefix.."_EU_input") >= harvester_demand and "%s Active" or "%s Unpowered"):format(machine_name))
+	end
+	
+end
+
+
+-- function called by technic mod
+local function harvester_run(pos, node)
+	minetest.chat_send_all("air " .. minetest.get_content_id("air"))	-- TODO DELETE
+	minetest.chat_send_all("dirt " .. minetest.get_content_id("dirt"))	-- TODO DELETE
+	minetest.chat_send_all("stone " .. minetest.get_content_id("dirt"))	-- TODO DELETE
+	minetest.chat_send_all("wheat " .. minetest.get_content_id("farming:wheat_8"))	-- TODO DELETE
+	
+	local meta = minetest.get_meta(pos)	
+	local prefix = meta:get_string("power_flag")
+	
+	if meta:get_int("enabled") and meta:get_int(prefix.."_EU_input") >= meta:get_int(prefix.."_EU_demand") then
+		-- do harvesting work	
+		
+		harvester_dig(pos, get_harvester_center(pos, meta:get_string("size")))
+		
+		
+		
+	end
+	
+	
+	set_harvester_demand(meta)
+end
+	
+
+
+
 minetest.register_node("autofarmer:harvester", {
 	description = "MV Harvester",
 	tiles = {"moreores_tin_block.png", "moreores_tin_block.png",
@@ -158,9 +242,10 @@ minetest.register_node("autofarmer:harvester", {
 		local size = 4
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext", "Harvester")
-		meta:set_string("formspec", get_harvester_formspec(4))
+		meta:set_string("formspec", get_harvester_formspec(size, get_label(meta)))
 		meta:set_int("size", size)
 		meta:set_int("dig_y", pos.y)
+		meta:set_string("power_flag", "MV")
 	end,
 	after_place_node = function(pos, placer, itemstack)
 		local meta = minetest.get_meta(pos)
@@ -169,43 +254,22 @@ minetest.register_node("autofarmer:harvester", {
 	end,
 	after_dig_node = pipeworks.scan_for_tube_objects,
 	on_receive_fields = harvester_receive_fields,
-})
-
-minetest.register_abm({
-	nodenames = {"autofarmer:harvester"},
-	interval = 1,
-	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
+	technic_run = harvester_run,
+		
+		-- old test function
+	on_punch = function(pos) 
+		-- toggle on/off
 		local meta = minetest.get_meta(pos)
-		local size = meta:get_int("size")
-		local eu_input = meta:get_int("MV_EU_input")
-		local demand = 1000
-		local center = get_harvester_center(pos, size)
-		local dig_y = meta:get_int("dig_y")
-
-		-- technic.switching_station_timeout_count(pos, "MV")
-
-		if meta:get_int("enabled") == 0 then
-			meta:set_string("infotext", "Harvester Disabled")
-			meta:set_int("MV_EU_demand", 0)
-			return
+		if meta:get_int("enabled") == 1 then
+			meta:set_int("enabled", 0)
+		else
+			meta:set_int("enabled", 1)
 		end
-
-		if eu_input < demand then
-			meta:set_string("infotext", "Harvester Unpowered")
-		elseif eu_input >= demand then
-			meta:set_string("infotext", "Harvester Active")
-
-			local items = harvester_dig(pos, center, size)
-			send_items(items, pos, node)
-
-			if dig_y < pos.y - harvester_max_depth then
-				meta:set_string("infotext", "Harvester Finished")
-			end
-		end
-		meta:set_int("MV_EU_demand", demand)
-	end
+	end,
+		
 })
+
+
 
 technic.register_machine("MV", "autofarmer:harvester", technic.receiver)
 

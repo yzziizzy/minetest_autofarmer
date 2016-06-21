@@ -17,9 +17,17 @@ autofarmer.MV_planter_length = 15
 autofarmer.HV_planter_demand = 22000
 -- farm size is adaptable ingame
 
--- placeholder testing
-autofarmer.HV_planter_width_side = 2
-autofarmer.HV_planter_length = 15
+
+
+-- LV harvester settings
+autofarmer.LV_harvester_demand = 8000
+
+-- MV harvester settings
+autofarmer.MV_harvester_demand = 1000
+
+
+-- HV harvester settings
+autofarmer.HV_harvester_demand = 4000
 
 
 
@@ -79,3 +87,37 @@ autofarmer.seeds_nodes = {
 }
 
 -- END OF SEED_NODES
+
+
+-- HARVESTER ALLOWED NODES
+autofarmer.harvester_dig_nodes = {
+	["farming:wheat_8"] = true,
+	["farming:cotton_8"] = true,
+	["farming:barley_8"] = true,
+
+	-- added hemp
+	["hemp:hemp_8"] = true,
+	
+	-- farming_plus changes?
+	["farming:blueberries_8"] = true,
+	["farming:cocoa_sapling_8"] = true,
+	["farming:coffee_beans_8"] = true,
+	["farming:corn_8"] = true,
+	["farming:cucumber_8"] = true,
+	["farming:carrot_8"] = true,
+	["farming:grapes_8"] = true,
+	["farming:melon_slice_8"] = true,
+	["farming:pumpkin_8"] = true,
+	["farming:raspberries_8"] = true,
+	["farming:rhubarb_8"] = true,
+	["farming:tomato_8"] = true,
+	["farming:potato_8"] = true,
+	
+
+
+} -- END HARVESTER NODES
+
+
+
+
+

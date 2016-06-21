@@ -27,11 +27,11 @@ local function get_planter_region(pos, size)
 	local farm_length = 0
 	
 	if flag == "LV" then 
-		farm_width_side = 2
-		farm_length = 6
+		farm_width_side = autofarmer.LV_planter_width_side
+		farm_length = autofarmer.LV_planter_length
 	elseif flag == "MV" then
-		farm_width_side = 3
-		farm_length = 15
+		farm_width_side = autofarmer.MV_planter_width_side
+		farm_length = autofarmer.HV_planter_length
 	elseif flag == "HV" then
 		-- custom from panel
 		farm_width_side = meta:get_int("farm_side")
@@ -160,7 +160,7 @@ end
 
 local function planter_run(pos, node)	
 	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
+	--local inv = meta:get_inventory()
 	-- initialize cache for the case we load an older world
 	--inv:set_size("cache", 12)
 	
