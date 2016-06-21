@@ -10,9 +10,10 @@ dofile(autofarmer.modpath .. "/default_settings.txt")
 -- load planter
 dofile(autofarmer.modpath .. "/planter.lua")
 
+-- load harvester
+dofile(autofarmer.modpath .. "/harvester.lua")
+
 -- load craft recipes
 dofile(autofarmer.modpath .. "/crafts.lua")
 
--- planters
---dofile(modpath.."/LV_planter")
 

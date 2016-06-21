@@ -149,7 +149,8 @@ minetest.register_node("autofarmer:harvester", {
 	         "moreores_tin_block.png", "moreores_tin_block.png",
 	         "moreores_tin_block.png^farming_tool_steelhoe.png", "moreores_tin_block.png"},
 	paramtype2 = "facedir",
-	groups = {cracky=2, tubedevice=1},
+	groups = {cracky=2, tubedevice=1, technic_machine=1, technic_mv=1},
+	connect_sides = {"bottom", "front", "left", "right"},
 	tube = {
 		connect_sides = {top = 1},
 	},
@@ -164,9 +165,9 @@ minetest.register_node("autofarmer:harvester", {
 	after_place_node = function(pos, placer, itemstack)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("owner", placer:get_player_name())
-		-- tube_scanforobjects(pos)
+		pipeworks.scan_for_tube_objects(pos)
 	end,
-	after_dig_node = tube_scanforobjects,
+	after_dig_node = pipeworks.scan_for_tube_objects,
 	on_receive_fields = harvester_receive_fields,
 })
 

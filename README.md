@@ -9,7 +9,14 @@ Edit and fixes by HarrierJack, borrowing even more code..
 Introduction:
 Adds automatic farming machines to minetest. They run on LV/MV/HV power from technic, and integrate with pipeworks. 
 
-The planter will put seeds from the normal game plants (wheat etc.) and plants without seeds from farming_plus (farming redo?) onto available farmland in its front position. The higher the current level (LV/MV/HV) the bigger the farm.
+The planter will put seeds from the normal game plants (wheat etc.) and plants without seeds from farming_plus (farming redo?) onto available farmland in its front position and only at its own block level. 
+
+A mesecon signal can be used to turn the machine off. Powering the planter is enough to activate it, providing there are seeds/plants inside it.
+
+LV-planter: 6000 EU for a 5 X 6 grid
+MV-planter: 11000 EU for a 7 X 15 grid 
+HV-planter: 22000 EU for a grid of choice through its interface
+
 
 
 TODO: 	- finetune planter
@@ -30,6 +37,12 @@ worldmods/ in your worlddirectory.
 For further information or help see:
 <http://wiki.minetest.com/wiki/Installing_Mods>
 
+
+Requires:
+Mesecons	<https://github.com/Jeija/minetest-mod-mesecons>
+Pipeworks	<https://github.com/minetest-mods/pipeworks>
+Technic 	<https://github.com/minetest-technic/technic>
+MoreOres	<https://github.com/minetest-mods/moreores>
 
 
 License:

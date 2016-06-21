@@ -1,5 +1,8 @@
 -- configurable settings
 
+-- width_side are the amount of blocks to each side (+ it's own block)
+-- length will be the length of the farm
+
 -- LV planter settings
 autofarmer.LV_planter_demand = 6000
 autofarmer.LV_planter_width_side = 2
@@ -14,6 +17,9 @@ autofarmer.MV_planter_length = 15
 autofarmer.HV_planter_demand = 22000
 -- farm size is adaptable ingame
 
+-- placeholder testing
+autofarmer.HV_planter_width_side = 2
+autofarmer.HV_planter_length = 15
 
 
 

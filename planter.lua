@@ -34,6 +34,8 @@ local function get_planter_region(pos, size)
 		farm_length = 15
 	elseif flag == "HV" then
 		-- custom from panel
+		farm_width_side = meta:get_int("farm_side")
+		farm_length = meta:get_int("farm_length")
 	end
 	
 	
@@ -152,7 +154,6 @@ local function set_planter_demand(meta)
 		meta:set_int(prefix.."_EU_demand", planter_demand)
 		meta:set_string("infotext", S(meta:get_int(prefix.."_EU_input") >= planter_demand and "%s Active" or "%s Unpowered"):format(machine_name))
 	end
--- TODO DELETE	minetest.chat_send_all("EUinput "..meta:get_string(prefix.."_EU_input"))
 end
 
 
@@ -176,6 +177,8 @@ end
 
 
 
+-- REGISTER NODES
+-- LV planter
 minetest.register_node("autofarmer:lv_planter", {
 	description = "LV Auto Planter",
 	tiles = {"default_copper_block.png", "default_copper_block.png",
@@ -212,10 +215,10 @@ minetest.register_node("autofarmer:lv_planter", {
 				
 	}},
 	on_construct = function(pos)
-		local size = 8
+		local size = 6
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext", "LV Planter")
-		meta:set_string("formspec", "invsize[8,7;]list[current_name;src;2,0;4,2;]list[current_player;main;0,3;8,4;]")
+		meta:set_string("formspec", "invsize[8,7;]list[current_name;src;2.5,0;3,2;]list[current_player;main;0,3;8,4;]")
 		meta:set_int("enabled", 0)
 		meta:set_string("power_flag", "LV")
 		set_planter_demand(meta)
@@ -234,6 +237,7 @@ minetest.register_node("autofarmer:lv_planter", {
 			return true
 		end
 	end,
+-- old test function
 --	on_punch = function(pos) 
 		-- toggle on/off
 --		local meta = minetest.get_meta(pos)
@@ -249,12 +253,31 @@ minetest.register_node("autofarmer:lv_planter", {
 		meta:set_string("owner", placer:get_player_name())
 		pipeworks.scan_for_tube_objects(pos)
 	end,
+	on_receive_fields = function(pos, formname, fields, player)
+			-- receive form spec here
+		
+	end,
 	after_dig_node = pipeworks.scan_for_tube_objects,
 	technic_run = planter_run,
 })
 
 
+-- create formspec for HV planter
+local function set_HV_planter_formspec(meta)
+	local side = meta:get_int("farm_side")
+	local length = meta:get_int("farm_length")
+	
+	meta:set_string("formspec", "invsize[8,7;]"..
+			"list[current_name;src;0,0;4,2;]"..
+			"list[current_player;main;0,3;8,4;]"..
+			"field[5,0.5;1,1;farm_side;Side;"..side.."]"..	
+			"field[5,1.5;1,1;farm_length;Length;"..length.."]"..
+			"button_exit[6,2;2,1;exit;Save]")
+	
+end
 
+
+-- MV PLANTER
 minetest.register_node("autofarmer:mv_planter", {
 	description = "MV Auto Planter",
 	tiles = {"default_bronze_block.png", "default_bronze_block.png",
@@ -278,13 +301,13 @@ minetest.register_node("autofarmer:mv_planter", {
 	},
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			minetest.chat_send_all("toggle off")
+			-- turn OFF on mese power
 			local meta = minetest.get_meta(pos)
 			meta:set_int("enabled", 0)			
 		end,
 		
 		action_off = function (pos, node)
-					minetest.chat_send_all("toggle on")
+			-- turn ON without mesepower
 			local meta = minetest.get_meta(pos)
 			meta:set_int("enabled", 1)
 		end
@@ -318,18 +341,23 @@ minetest.register_node("autofarmer:mv_planter", {
 		meta:set_string("owner", placer:get_player_name())
 		pipeworks.scan_for_tube_objects(pos)
 	end,
+	on_receive_fields = function(pos, formname, fields, player)
+		-- receive form spec here
+
+	end,
 	after_dig_node = pipeworks.scan_for_tube_objects,
 	technic_run = planter_run,
 })	
 	
 
+-- HV planter
 minetest.register_node("autofarmer:hv_planter", {
 	description = "HV Auto Planter",
 	tiles = {"default_steel_block.png", "default_steel_block.png",
 	         "default_steel_block.png", "default_steel_block.png",
 	         "default_steel_block.png^farming_tool_diamondhoe.png", "default_steel_block.png"},
 	paramtype2 = "facedir",
-	groups = {cracky=2, tubedevice=1, tubedevice_receiver=1, technic_machine=1, technic_mv=1, mesecon_effector_off = 1, mesecon = 2},
+	groups = {cracky=2, tubedevice=1, tubedevice_receiver=1, technic_machine=1, technic_hv=1, mesecon_effector_off = 1, mesecon = 2},
 	connect_sides = {"bottom", "front", "left", "right"},
 	tube = {
 		insert_object = function(pos, node, stack, direction)
@@ -362,12 +390,12 @@ minetest.register_node("autofarmer:hv_planter", {
 		local size = 8
 		local meta = minetest.get_meta(pos)
 		meta:set_string("infotext", "HV Planter")
-		meta:set_string("formspec", "invsize[8,7;]list[current_name;src;2,0;4,2;]list[current_player;main;0,3;8,4;]")
 		meta:set_string("power_flag", "HV")
 		meta:set_int("enabled", 0)
 		set_planter_demand(meta)
 		local inv = meta:get_inventory()
 		inv:set_size("src", size)
+		set_HV_planter_formspec(meta)
 	end,
 	can_dig = function(pos,player)
 		local meta = minetest.get_meta(pos)
@@ -385,12 +413,26 @@ minetest.register_node("autofarmer:hv_planter", {
 		meta:set_string("owner", placer:get_player_name())
 		pipeworks.scan_for_tube_objects(pos)
 	end,
+	on_receive_fields = function(pos, formname, fields, player)
+			-- receive form spec here
+			if fields.exit and string.find(fields.farm_side, "^[0-9]+$") and string.find(fields.farm_length, "^[0-9]+$") then
+				local side = tonumber(fields.farm_side)
+				local length = tonumber(fields.farm_length)
+				local meta = minetest.get_meta(pos)
+				
+				if side < 100 and length < 100 then
+					meta:set_int("farm_side", side)
+					meta:set_int("farm_length", length)
+					set_HV_planter_formspec(meta)
+				end	
+			
+			end
+		end,	
 	after_dig_node = pipeworks.scan_for_tube_objects,
 	technic_run = planter_run,
 })
 
 
-
 technic.register_machine("LV", "autofarmer:lv_planter", technic.receiver)
 technic.register_machine("MV", "autofarmer:mv_planter", technic.receiver)
-technic.register_machine("LV", "autofarmer:hv_planter", technic.receiver)
+technic.register_machine("HV", "autofarmer:hv_planter", technic.receiver)
