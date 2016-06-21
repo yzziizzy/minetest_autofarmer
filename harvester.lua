@@ -13,7 +13,7 @@ local harvester_length = 30 -- How long the row will be
 local harvester_row_width      = 1 -- how many blocks each way from the center. 1 = 3 block width, 2 = 5 block width.
 
 -- TEST
-local harvester_dig_above_nodes = 0
+local harvester_dig_above_nodes = 15
 local harvester_max_depth = 0
 
 
@@ -91,22 +91,21 @@ local function gen_next_digpos(center, digpos, size)
 end
 
 local function find_next_digpos(data, area, center, dig_y, size)
-	local c_air = minetest.get_content_id("air")
-	local c_test = minetest.get_content_id("farming:wheat_1")
+	-- local c_air = minetest.get_content_id("air")
+	-- local c_test = minetest.get_content_id("farming:wheat_1")
 
 	for y = center.y + harvester_dig_above_nodes, dig_y - 1, -1 do
 	for z = center.z - size, center.z + size do
 	for x = center.x - size, center.x + size do
 				
-				
-		local nname = minetest.get_name_from_content_id(data[area:index(x, y, z)])
-				
+		-- check if node on pos(x,y,z) is allowed for diggin e.a. in harvester_dig_node
+		local nname = minetest.get_name_from_content_id(data[area:index(x, y, z)])				
 		if autofarmer.harvester_dig_nodes[nname] then
 				-- harvest allowed
 				return vector.new(x, y, z)
 		end
 				
-				-- TODO CHECK FOR ALLOWED NODES
+				-- TODO DELETE old lines, did not discriminate and only checked for air
 		-- if data[area:index(x, y, z)] ~= c_air and data[area:index(x, y, z)] ~= c_test then
 			-- return vector.new(x, y, z)
 		--end
@@ -145,11 +144,13 @@ local function harvester_dig(pos, center)
 			meta:set_int("dig_y", digpos.y)
 			return drops
 		end
-		if minetest.is_protected and minetest.is_protected(digpos, owner) then
-			-- TODO probably check since it will be turned on again after power check
+		
+		-- TODO probably check since it will be turned on again after power check / or do nothing?
+		if minetest.is_protected and minetest.is_protected(digpos, owner) then		
 			meta:set_int("enabled", 0)
 			return
 		end
+		
 		dig_y = digpos.y
 		local node = minetest.get_node(digpos)
 		drops = minetest.get_node_drops(node.name, "")
@@ -172,10 +173,14 @@ end
 
 local function send_items(items, pos, node)
 	for _, item in pairs(items) do
-		local tube_item = tube_item(vector.new(pos), item)
-		tube_item:get_luaentity().start_pos = vector.new(pos)
-		tube_item:setvelocity(vector.new(0, 1, 0))
-		tube_item:setacceleration({x=0, y=0, z=0})
+		-- local tube_item = tube_item(vector.new(pos), item)
+		-- tube_item:get_luaentity().start_pos = vector.new(pos)
+		-- tube_item:setvelocity(vector.new(0, 1, 0))
+		-- tube_item:setacceleration({x=0, y=0, z=0})
+		
+		technic.tube_inject_item(pos, pos, vector.new(0, 1, 0), item)
+		
+		
 	end
 end
 
@@ -203,27 +208,28 @@ end
 
 -- function called by technic mod
 local function harvester_run(pos, node)
-	minetest.chat_send_all("air " .. minetest.get_content_id("air"))	-- TODO DELETE
-	minetest.chat_send_all("dirt " .. minetest.get_content_id("dirt"))	-- TODO DELETE
-	minetest.chat_send_all("stone " .. minetest.get_content_id("dirt"))	-- TODO DELETE
-	minetest.chat_send_all("wheat " .. minetest.get_content_id("farming:wheat_8"))	-- TODO DELETE
-	
 	local meta = minetest.get_meta(pos)	
 	local prefix = meta:get_string("power_flag")
 	
-	if meta:get_int("enabled") and meta:get_int(prefix.."_EU_input") >= meta:get_int(prefix.."_EU_demand") then
-		-- do harvesting work	
-		
-		harvester_dig(pos, get_harvester_center(pos, meta:get_string("size")))
-		
-		
-		
-	end
+	-- create delay/chance so not every second something is harvested
+	if math.random(4) == 1 then	
+		if meta:get_int("enabled") == 1 and meta:get_int(prefix.."_EU_input") >= meta:get_int(prefix.."_EU_demand") then
+			-- do harvesting work	
+			local drops = harvester_dig(pos, get_harvester_center(pos, meta:get_string("size")))	
+			send_items(drops, pos, node)
+		end
 	
-	
+	end	
+		
 	set_harvester_demand(meta)
 end
 	
+
+local function autofarmer_delay()
+	
+	return math.random(nr)
+	
+end
 
 
 
@@ -236,7 +242,7 @@ minetest.register_node("autofarmer:harvester", {
 	groups = {cracky=2, tubedevice=1, technic_machine=1, technic_mv=1},
 	connect_sides = {"bottom", "front", "left", "right"},
 	tube = {
-		connect_sides = {top = 1},
+		connect_sides = {top = 1, front = 1},
 	},
 	on_construct = function(pos)
 		local size = 4

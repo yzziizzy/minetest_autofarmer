@@ -31,7 +31,7 @@ local function get_planter_region(pos, size)
 		farm_length = autofarmer.LV_planter_length
 	elseif flag == "MV" then
 		farm_width_side = autofarmer.MV_planter_width_side
-		farm_length = autofarmer.HV_planter_length
+		farm_length = autofarmer.MV_planter_length
 	elseif flag == "HV" then
 		-- custom from panel
 		farm_width_side = meta:get_int("farm_side")
@@ -166,7 +166,7 @@ local function planter_run(pos, node)
 	
 	local prefix = meta:get_string("power_flag")
 	
-	if meta:get_int("enabled") and meta:get_int(prefix.."_EU_input") >= meta:get_int(prefix.."_EU_demand") then
+	if meta:get_int("enabled") == 1 and meta:get_int(prefix.."_EU_input") >= meta:get_int(prefix.."_EU_demand") then
 		-- plant on plantable spot
 		plant_seed(pos, node)		
 	end
@@ -359,7 +359,7 @@ minetest.register_node("autofarmer:hv_planter", {
 	paramtype2 = "facedir",
 	groups = {cracky=2, tubedevice=1, tubedevice_receiver=1, technic_machine=1, technic_hv=1, mesecon_effector_off = 1, mesecon = 2},
 	connect_sides = {"bottom", "front", "left", "right"},
-	tube = {
+	tube = {	-- TODO CHECK DOUBLE FUNCTION?
 		insert_object = function(pos, node, stack, direction)
 			local meta = minetest.get_meta(pos)
 			local inv = meta:get_inventory()
@@ -392,6 +392,11 @@ minetest.register_node("autofarmer:hv_planter", {
 		meta:set_string("infotext", "HV Planter")
 		meta:set_string("power_flag", "HV")
 		meta:set_int("enabled", 0)
+			
+		-- init meta values so they are set for first time calculations
+		meta:set_int("farm_side", 0)
+		meta:set_int("farm_length", 0)
+			
 		set_planter_demand(meta)
 		local inv = meta:get_inventory()
 		inv:set_size("src", size)
