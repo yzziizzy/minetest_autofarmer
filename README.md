@@ -6,27 +6,30 @@ Props to RealBadAngel, VanessaE. Lots of code "borrowed" from them.
 
 Edit and fixes by HarrierJack, borrowing even more code..
 
-Introduction:
+###Introduction:
 Adds automatic farming machines to minetest. They run on LV/MV/HV power from technic, and integrate with pipeworks. 
 
 The planter will put seeds from the normal game plants (wheat etc.) and plants without seeds from farming_plus (farming redo?) onto available farmland in its front position and only at its own block level. 
 
 A mesecon signal can be used to turn the machine off. Powering the planter is enough to activate it, providing there are seeds/plants inside it.
 
+Values can be changed in default_settings.txt
 LV-planter: 6000 EU for a 5 X 6 grid
 MV-planter: 11000 EU for a 7 X 15 grid 
 HV-planter: 22000 EU for a grid of choice through its interface
 
+The Harvester will 'harvest' any plant/tree node within it's reach, settings are configurable through it's own form. The harvester only comes in MV flavor, _TODO: it just requires more the bigger the area._ Also height is a factor so it can be used for farming trees. Harvesting can also be done one block down so the harvester can be stacked on top of the planter.
 
 
-TODO: 	- finetune planter
-	- do something with water/pipes?
-	- fix/create harvester
-	- tweak craft / default settings (feedback appreciated)
-	- test/squash/enjoy
-	- ohyeah, some pretty textures would be nice.. :S
+####TODO: 	
+	- [X] fix planter
+	- [ ] do something with water/pipes? (probably not)
+	- [X] fix/create harvester
+	- [ ] tweak craft / default settings (feedback appreciated)
+	- [ ] test/squash/enjoy
+	- [ ] ohyeah, some pretty textures would be nice.. :S
 
-How to install:
+###How to install:
 TIP: It's usually better to rename the folder to 'autofarmer' removing the trailing 'minetest_'.
 
 Unzip the archive an place it in minetest-base-directory/mods/minetest/
@@ -39,13 +42,13 @@ For further information or help see:
 
 
 Requires:
-Mesecons	<https://github.com/Jeija/minetest-mod-mesecons>
-Pipeworks	<https://github.com/minetest-mods/pipeworks>
-Technic 	<https://github.com/minetest-technic/technic>
-MoreOres	<https://github.com/minetest-mods/moreores>
+[Mesecons](https://github.com/Jeija/minetest-mod-mesecons)
+[Pipeworks](https://github.com/minetest-mods/pipeworks)
+[Technic](https://github.com/minetest-technic/technic)
+[MoreOres](https://github.com/minetest-mods/moreores)
 
 
-License:
+####License:
 UNLICENSE (see LICENSE file in package)
 --or--
 WTFPL (see below)
