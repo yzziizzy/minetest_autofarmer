@@ -1,5 +1,6 @@
 -- configurable settings
 
+-- demand is the technic power consumption
 -- width_side are the amount of blocks to each side (+ it's own block)
 -- length will be the length of the farm
 
@@ -15,32 +16,31 @@ autofarmer.MV_planter_length = 15
 
 -- HV planter settings
 autofarmer.HV_planter_demand = 22000
--- farm size is adaptable ingame
+-- farm size of HV planter is adaptable ingame
 
 
 
--- LV harvester settings
-autofarmer.LV_harvester_demand = 6000
-
--- MV harvester settings
+-- Harvester Settings
 autofarmer.MV_harvester_demand = 1000
 
+-- delay is the time between possible harvest in seconds 
+-- (including randomness unless set to 1 then every second harvest is checked)
+autofarmer.MV_harvester_delay = 5
 
--- HV harvester settings
-autofarmer.HV_harvester_demand = 4000
+-- depth is how many blocks below the harvester will be harvested, default 1 so it can be stacked on planter
+autofarmer.MV_harvester_max_depth = 1
 
 
-
--- add new/custom mod plants below, keep the syntax [""] = "",
+-- add/remove new/custom mod plants below, keep the syntax [""] = "",
 -- inluding the comma
 -- names should be the following: ["full-name-in-game"] = "modname:plantname_1"
--- note to add _1 to the plantname and the texture must exist with that mod following farming_plus/redo rules
+-- note to add _1 to the plant for first stage unless they are trees
 autofarmer.seeds_nodes = {
 	["farming:seed_wheat"]= "farming:wheat_1",
 	["farming:seed_cotton"]= "farming:cotton_1",
 	["farming:seed_barley"]= "farming:barley_1",
 	
-	-- old deprecated?/legacy
+	-- old deprecated?/legacy?
 	["farming:pumpkin_seed"]= "farming:pumpkin_1",
 	["farming:rhubarb_seed"]= "farming:rhubarb_1",
 	["farming:strawberry_seed"]="farming:strawberry_1",
@@ -67,12 +67,17 @@ autofarmer.seeds_nodes = {
 	["farming:tomato"]="farming:tomato_1",
 	["farming:potato"]="farming:potato_1",
 	
-	["default:sapling"]="default:sapling",
+
+	-- trees usually keep their same name (sapling -> sapling)
+	["default:sapling"] = "default:sapling",
+	["default:junglesapling"] = "default:junglesapling",
+	["default:pine_sapling"] = "default:pine_sapling",
+	["default:acacia_sapling"] = "default:acacia_sapling",
+	["default:aspen_sapling"] = "default:aspen_sapling",
+
 	["moretrees:birch_sapling"]="moretrees:birch_sapling",
 	["moretrees:spruce_sapling"]="moretrees:spruce_sapling",
 	["moretrees:fir_sapling"]="moretrees:fir_sapling",
-	["moretrees:jungletree_sapling"]="moretrees:jungletree_sapling",
-	["default:junglesapling"]="default:junglesapling",
 	["moretrees:beech_sapling"]="moretrees:beech_sapling",
 	["moretrees:apple_tree_sapling"]="moretrees:apple_tree_sapling",
 	["moretrees:oak_sapling"]="moretrees:oak_sapling",
@@ -89,36 +94,65 @@ autofarmer.seeds_nodes = {
 
 
 -- HARVESTER ALLOWED NODES
--- the number at the end is the full grown stage, differs from plant to plant
+-- the number at the end is the full grown stage, differs from plant to plant, look for it in game
 autofarmer.harvester_dig_nodes = {
 	["farming:wheat_8"] = true,
 	["farming:cotton_8"] = true,
-	["farming:barley_8"] = true,
+	["farming:barley_7"] = true,
 
 	-- added hemp
 	["hemp:hemp_8"] = true,
 	
-	-- farming_plus
-	["farming:blueberries_4"] = true,
-	["farming:cocoa_sapling_8"] = true,
-	["farming:coffee_beans_8"] = true,
+	-- farming_plus/farming
+	["farming:tomato_8"] = true,
+	["farming:coffee_5"] = true,
 	["farming:corn_8"] = true,
-	["farming:cucumber_8"] = true,
-	["farming:carrot_8"] = true,
-	["farming:grapes_8"] = true,
-	["farming:melon_8"] = true,
 	["farming:pumpkin_8"] = true,
+	["farming:carrot_8"] = true,
+	["farming:melon_8"] = true,
+	["farming:cucumber_4"] = true,
 	["farming:raspberries_4"] = true,
+	["farming:blueberries_4"] = true,
+	["farming:potato_4"] = true,
 	["farming:rhubarb_3"] = true,
-	["farming:tomato_7"] = true,
-	["farming:potato_8"] = true,
-	
+
+	-- TODO things on stakes?
+-- 	["farming:grapes_8"] = true,
+--	["farming:beanpole_5"] = true,
 
 	-- trees
+	["default:tree"] = true,
+	["default:acacia_tree"] = true,
+	["default:pine_tree"] = true,	
+	["default:aspen_tree"] = true,
+	["default:jungle_tree"] = true,
+
+	-- moretrees
 	["moretrees:rubber_tree_trunk"] = true,
+	["moretrees:apple_tree_trunk"] = true,
+	["moretrees:oak_trunk"] = true,
+	["moretrees:birch_trunk"] = true,
+	["moretrees:spruce_trunk"] = true,
+	["moretrees:willow_trunk"] = true,
+	["moretrees:beech_trunk"] = true,
+	["moretrees:fir_trunk"] = true,
+	["moretrees:cedar_trunk"] = true,
+	["moretrees:palm_trunk"] = true,
+	["moretrees:sequoia_trunk"] = true,
 
 
-} -- END HARVESTER NODES
+
+-- TODO add plantlife mod, look for other farming mods
+
+	-- ["ferns:fern_trunk"] = true,
+
+
+	-- plantlife
+	--["bushes:blackberry_bush"] = true,
+	--["bushes:raspberry_bush"] = true,
+
+} 
+-- END OF HARVESTER NODES
 
 
 

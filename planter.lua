@@ -6,7 +6,7 @@ local S = technic.getter
 
 -- original function used in get_planter_region(pos,size)
 -- [x][z] -- y assumed to be 0
-local fastcross = {
+autofarmer.fastcross = {
 	[1]={
 		[0]={x=0,y=0,z=-1}},
 	[-1]={
@@ -16,7 +16,7 @@ local fastcross = {
 		[-1]={x=1,y=0,z=0}}
 	}
 
-local function get_planter_region(pos, size)
+local function get_planter_region(pos)
 	local node     = minetest.get_node(pos)
 	local back_dir = minetest.facedir_to_dir(node.param2)
 	
@@ -39,7 +39,7 @@ local function get_planter_region(pos, size)
 	end
 	
 	
-	local sideways = fastcross[back_dir.x][back_dir.z]
+	local sideways = autofarmer.fastcross[back_dir.x][back_dir.z]
 	
 	local left = vector.add(pos, vector.multiply(sideways, farm_width_side))
 	left = vector.add(left, back_dir)
@@ -86,7 +86,7 @@ end
 local function plant_seed(pos, node)
 	local meta  = minetest.get_meta(pos)
 	local inv   = meta:get_inventory()
-	local p1,p2 = get_planter_region(pos, size)
+	local p1,p2 = get_planter_region(pos)
 
 	local vm = VoxelManip()
 	local e1, e2 = vm:read_from_map(p1, p2)
@@ -202,13 +202,13 @@ minetest.register_node("autofarmer:lv_planter", {
 	},
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			minetest.chat_send_all("toggle off")
+			-- turn OFF on mese power
 			local meta = minetest.get_meta(pos)
 			meta:set_int("enabled", 0)			
 		end,
 		
 		action_off = function (pos, node)
-					minetest.chat_send_all("toggle on")
+			-- turn ON without mesepower
 			local meta = minetest.get_meta(pos)
 			meta:set_int("enabled", 1)
 		end
@@ -374,13 +374,13 @@ minetest.register_node("autofarmer:hv_planter", {
 	},
 	mesecons = {effector = {
 		action_on = function (pos, node)
-			minetest.chat_send_all("toggle off")
+			-- turn OFF on mese power
 			local meta = minetest.get_meta(pos)
 			meta:set_int("enabled", 0)			
 		end,
 		
 		action_off = function (pos, node)
-					minetest.chat_send_all("toggle on")
+			-- turn ON without mesepower
 			local meta = minetest.get_meta(pos)
 			meta:set_int("enabled", 1)
 		end
