@@ -42,11 +42,11 @@ For further information or help see:
 
 
 Requires:
+[Technic](https://github.com/minetest-technic/technic)
+
 [Mesecons](https://github.com/Jeija/minetest-mod-mesecons)
 
 [Pipeworks](https://github.com/minetest-mods/pipeworks)
-
-[Technic](https://github.com/minetest-technic/technic)
 
 [MoreOres](https://github.com/minetest-mods/moreores)
 

@@ -1,8 +1,8 @@
 -- configurable settings
 
 -- demand is the technic power consumption
--- width_side are the amount of blocks to each side (+ it's own block)
--- length will be the length of the farm
+-- width_side are the amount of blocks to each side (+ it's own block thus the width of a farm is (2xside)+1 )
+-- length would be the length of the farm from the front side (face side)
 
 -- LV planter settings
 autofarmer.LV_planter_demand = 6000
@@ -21,7 +21,8 @@ autofarmer.HV_planter_demand = 22000
 
 
 -- Harvester Settings
-autofarmer.MV_harvester_demand = 1000
+autofarmer.harvester_min_demand = 4000
+autofarmer.harvester_demand_per_node = 4
 
 -- delay is the time between possible harvest in seconds 
 -- (including randomness unless set to 1 then every second harvest is checked)
@@ -30,6 +31,8 @@ autofarmer.MV_harvester_delay = 5
 -- depth is how many blocks below the harvester will be harvested, default 1 so it can be stacked on planter
 autofarmer.MV_harvester_max_depth = 1
 
+
+-- PLANTER / HARVESTER allowed node settings
 
 -- add/remove new/custom mod plants below, keep the syntax [""] = "",
 -- inluding the comma
@@ -111,14 +114,21 @@ autofarmer.harvester_dig_nodes = {
 	["farming:carrot_8"] = true,
 	["farming:melon_8"] = true,
 	["farming:cucumber_4"] = true,
-	["farming:raspberries_4"] = true,
-	["farming:blueberries_4"] = true,
+	["farming:raspberry_4"] = true,
+	["farming:blueberry_4"] = true,
 	["farming:potato_4"] = true,
 	["farming:rhubarb_3"] = true,
 
 	-- TODO things on stakes?
 -- 	["farming:grapes_8"] = true,
 --	["farming:beanpole_5"] = true,
+
+	-- fruits from trees
+	["default:apple"] = true,
+	["moretrees:coconut"] = true,
+	["moretrees:fir_cone"] = true,
+	["moretrees:cedar_cone"] = true,
+	["moretrees:spruce_cone"] = true,
 
 	-- trees
 	["default:tree"] = true,
@@ -129,7 +139,7 @@ autofarmer.harvester_dig_nodes = {
 
 	-- moretrees
 	["moretrees:rubber_tree_trunk"] = true,
-	["moretrees:apple_tree_trunk"] = true,
+	-- ["moretrees:apple_tree_trunk"] = true,
 	["moretrees:oak_trunk"] = true,
 	["moretrees:birch_trunk"] = true,
 	["moretrees:spruce_trunk"] = true,
@@ -142,7 +152,7 @@ autofarmer.harvester_dig_nodes = {
 
 
 
--- TODO add plantlife mod, look for other farming mods
+-- TODO add plantlife mod?, look for other farming mods
 
 	-- ["ferns:fern_trunk"] = true,
 

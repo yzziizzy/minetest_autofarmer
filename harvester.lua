@@ -9,11 +9,6 @@
 local S = technic.getter
 
 
-
-
--- local harvester_length = 30 -- How long the row will be
--- local harvester_row_width      = 1 -- how many blocks each way from the center. 1 = 3 block width, 2 = 5 block width.
-
 -- get some vars from gobal settings cause I was too lazy to change calculation references
 -- local harvester_dig_above_nodes = autofarmer.MV_harvester_max_height
 local harvester_max_depth = autofarmer.MV_harvester_max_depth
@@ -38,8 +33,6 @@ end
 
 
 local function harvester_receive_fields(pos, formname, fields, sender)
-	--if fields.quit then return true end
-	
 	local meta = minetest.get_meta(pos)
 
 	if fields.side and fields.length and fields.height then
@@ -69,7 +62,6 @@ local function harvester_receive_fields(pos, formname, fields, sender)
 		end
 	end	
 	
-	
 	return true
 end
 
@@ -81,10 +73,8 @@ local function find_next_digpos(data, area, minp, maxp)
 	for x = minp.x, maxp.x do
 		-- check if node on pos(x,y,z) is allowed for diggin e.a. in harvester_dig_node
 		local nname = minetest.get_name_from_content_id(data[area:index(x, y, z)])	
-				-- minetest.chat_send_all(nname) --TODO DELETE
 		if autofarmer.harvester_dig_nodes[nname] then
 				-- harvest allowed
-				--	minetest.chat_send_all("harvest allowed x:".. x .." Y:"..y.." Z:"..z)	-- TODO DELETE
 				return vector.new(x, y, z)
 		end
 	end
@@ -106,9 +96,7 @@ autofarmer.fastcross2 = {
 	
 local function get_harvester_region(pos)
 	local node     = minetest.get_node(pos)
-	local back_dir = minetest.facedir_to_dir(node.param2)
-	
-	
+	local back_dir = minetest.facedir_to_dir(node.param2)	
 	
 	-- determine current type and set size
 	local meta = minetest.get_meta(pos)
@@ -117,8 +105,6 @@ local function get_harvester_region(pos)
 	local farm_length = meta:get_int("farm_length")
 	local farm_height = meta:get_int("farm_height")
 
-	-- TODO region should contain max height..
-	
 	local sideways = autofarmer.fastcross[back_dir.x][back_dir.z]
 	
 	local left = vector.add(pos, vector.multiply(sideways, farm_width_side))
@@ -152,7 +138,6 @@ local function harvester_dig(pos)
 	local meta = minetest.get_meta(pos)
 	local drops = {}
 	local owner = meta:get_int("owner")
-	
 		
 	local p1,p2 = get_harvester_region(pos)
 
@@ -160,8 +145,6 @@ local function harvester_dig(pos)
 	local e1, e2 = vm:read_from_map(p1, p2)
 	local area = VoxelArea:new({MinEdge=e1, MaxEdge=e2})
 	local data = vm:get_data()
-
---	local plantp = find_next_plant_pos(data, area, p1, p2)
 
 	local digpos = find_next_digpos(data, area, p1, p2)
 
@@ -171,14 +154,9 @@ local function harvester_dig(pos)
 			meta:set_int("enabled", 0)
 			return
 		end
-		
-		minetest.chat_send_all("almost mining x:"..digpos.x .. "y: ".. digpos.y .. "z: " .. digpos.z)
-		
-		--dig_y = digpos.y
+	
 		local node = minetest.get_node(digpos)
 		drops = minetest.get_node_drops(node.name)		-- TODO get_node_drops(node, tool) optional tool...
-		
-		minetest.chat_send_all("nodename: "..node.name)
 		
 		minetest.dig_node(digpos)
 		if minetest.get_node(digpos).name == node.name then
@@ -188,18 +166,9 @@ local function harvester_dig(pos)
 			-- from things like concrete posts with platforms,
 			-- which turn into regular concrete posts when dug.
 			drops = {}
-			
-			--minetest.chat_send_all("why you no mine?")
 		end
-	--elseif not (dig_y < pos.y - harvester_max_depth) then
-		
-		-- no clue why?
-		--minetest.chat_send_all("clueless dig_y=".. dig_y)
-		
-		--dig_y = dig_y - 16
 	end
 
-	--meta:set_int("dig_y", dig_y)
 	return drops
 end
 
@@ -211,15 +180,44 @@ local function send_items(items, pos, node)
 end
 
 
+local function calculate_demand(meta)	
+	local height = meta:get_int("farm_height")
+	local length = meta:get_int("farm_length")
+	local width = meta:get_int("farm_side")
+	-- calculate proper width
+	width = (width * 2) + 1
+	
+	-- adjust for exploiting multiplying by zero height
+	if(height<=0) then height = 1 end	
+	if(width<=0) then width = 1 end
+	if(length<=1) then length = 2 end
+	
+	local demand_per_node = autofarmer.harvester_demand_per_node
+	
+	
+	-- require minimum power harvester_min_demand
+	local demand = (height * length * width * demand_per_node)
+	if(demand < autofarmer.harvester_min_demand) then
+		demand = autofarmer.harvester_min_demand
+	else
+		demand = autofarmer.harvester_min_demand + demand
+	end
+	
+	return demand
+end
+
+
 local function set_harvester_demand(meta)
 	local prefix = meta:get_string("power_flag")
 	local machine_name = S("%s Harvester"):format(prefix)
-	local harvester_demand
+	local harvester_demand = calculate_demand(meta)
 	
-	-- get the right values for the right current TODO perhaps not
-	if prefix == "LV" then harvester_demand = autofarmer.LV_harvester_demand end
-	if prefix == "MV" then harvester_demand = autofarmer.MV_harvester_demand end
-	if prefix == "HV" then harvester_demand = autofarmer.HV_harvester_demand end
+	-- get the right values for the right current TODO perhaps not, currently only enhanced MV implemented
+	--if prefix == "LV" then harvester_demand = autofarmer.LV_harvester_demand end
+	--if prefix == "MV" then harvester_demand = autofarmer.MV_harvester_demand end
+	--if prefix == "HV" then harvester_demand = autofarmer.HV_harvester_demand end
+	
+	
 	
 	if meta:get_int("enabled") == 0 then
 		meta:set_int(prefix.."_EU_demand", 0)
@@ -261,7 +259,7 @@ minetest.register_node("autofarmer:harvester", {
 	groups = {cracky=2, tubedevice=1, technic_machine=1, technic_mv=1},
 	connect_sides = {"bottom", "front", "left", "right"},
 	tube = {
-		connect_sides = {top = 1},	-- TODO front (real world backside) but this was easiest since up (or down) 
+		connect_sides = {top = 1},	-- TODO front? (real world backside) but this was easiest since up (or down) 
 										-- is always the same regardless of orientation
 	},
 		
@@ -286,7 +284,6 @@ minetest.register_node("autofarmer:harvester", {
 		meta:set_string("formspec", get_harvester_formspec(side, length, 1, get_label(meta)))
 		meta:set_int("farm_side", side)
 		meta:set_int("farm_length", length)
-		--meta:set_int("dig_y", pos.y)
 		meta:set_string("power_flag", "MV")
 		local inv = meta:get_inventory()
 		inv:set_size("main", 1)
@@ -301,17 +298,15 @@ minetest.register_node("autofarmer:harvester", {
 	technic_run = harvester_run,
 		
 		-- old test function
-	on_punch = function(pos) 
+	--on_punch = function(pos) 
 		-- toggle on/off
-		local meta = minetest.get_meta(pos)
-		if meta:get_int("enabled") == 1 then
-			meta:set_int("enabled", 0)
-		else
-			meta:set_int("enabled", 1)
-		end
-		
-		
-	end,
+	--	local meta = minetest.get_meta(pos)
+	--	if meta:get_int("enabled") == 1 then
+	--		meta:set_int("enabled", 0)
+	--	else
+	--		meta:set_int("enabled", 1)
+	--	end
+	--	end,
 		
 })
 
