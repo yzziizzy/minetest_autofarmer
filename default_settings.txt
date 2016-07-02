@@ -4,6 +4,9 @@
 -- width_side are the amount of blocks to each side (+ it's own block thus the width of a farm is (2xside)+1 )
 -- length would be the length of the farm from the front side (face side)
 
+-- chance to plant, higher number is more delay
+autofarmer.planter_delay = 4
+
 -- LV planter settings
 autofarmer.LV_planter_demand = 6000
 autofarmer.LV_planter_width_side = 2
@@ -25,7 +28,7 @@ autofarmer.harvester_min_demand = 4000
 autofarmer.harvester_demand_per_node = 4
 
 -- delay is the time between possible harvest in seconds 
--- (including randomness unless set to 1 then every second harvest is checked)
+-- (including randomness, unless set to 1 then every second harvest is checked)
 autofarmer.MV_harvester_delay = 5
 
 -- depth is how many blocks below the harvester will be harvested, default 1 so it can be stacked on planter

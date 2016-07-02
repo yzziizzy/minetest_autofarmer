@@ -166,11 +166,13 @@ local function planter_run(pos, node)
 	
 	local prefix = meta:get_string("power_flag")
 	
-	if meta:get_int("enabled") == 1 and meta:get_int(prefix.."_EU_input") >= meta:get_int(prefix.."_EU_demand") then
-		-- plant on plantable spot
-		plant_seed(pos, node)		
+	-- create delay/chance so not every second something is planted
+	if math.random(autofarmer.planter_delay) == 1 then	
+		if meta:get_int("enabled") == 1 and meta:get_int(prefix.."_EU_input") >= meta:get_int(prefix.."_EU_demand") then
+			-- plant on plantable spot
+			plant_seed(pos, node)		
+		end
 	end
-	
 	
 	set_planter_demand(meta)
 end
@@ -180,7 +182,7 @@ end
 -- REGISTER NODES
 -- LV planter
 minetest.register_node("autofarmer:lv_planter", {
-	description = "LV Auto Planter",
+	description = "LV Planter",
 	tiles = {"default_copper_block.png", "default_copper_block.png",
 	         "default_copper_block.png", "default_copper_block.png",
 	         "default_copper_block.png^farming_tool_stonehoe.png", "default_copper_block.png"},
@@ -279,7 +281,7 @@ end
 
 -- MV PLANTER
 minetest.register_node("autofarmer:mv_planter", {
-	description = "MV Auto Planter",
+	description = "MV Planter",
 	tiles = {"default_bronze_block.png", "default_bronze_block.png",
 	         "default_bronze_block.png", "default_bronze_block.png",
 	         "default_bronze_block.png^farming_tool_bronzehoe.png", "default_bronze_block.png"},
@@ -352,7 +354,7 @@ minetest.register_node("autofarmer:mv_planter", {
 
 -- HV planter
 minetest.register_node("autofarmer:hv_planter", {
-	description = "HV Auto Planter",
+	description = "HV Planter",
 	tiles = {"default_steel_block.png", "default_steel_block.png",
 	         "default_steel_block.png", "default_steel_block.png",
 	         "default_steel_block.png^farming_tool_diamondhoe.png", "default_steel_block.png"},
