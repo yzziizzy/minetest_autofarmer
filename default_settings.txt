@@ -121,6 +121,7 @@ autofarmer.harvester_dig_nodes = {
 	["farming:blueberry_4"] = true,
 	["farming:potato_4"] = true,
 	["farming:rhubarb_3"] = true,
+	["farming:cocoa_3"] = true,
 
 	-- TODO things on stakes?
 -- 	["farming:grapes_8"] = true,
@@ -132,25 +133,29 @@ autofarmer.harvester_dig_nodes = {
 	["moretrees:fir_cone"] = true,
 	["moretrees:cedar_cone"] = true,
 	["moretrees:spruce_cone"] = true,
+	["moretrees:acorn"] =  true,
 
 	-- trees
 	["default:tree"] = true,
 	["default:acacia_tree"] = true,
 	["default:pine_tree"] = true,	
 	["default:aspen_tree"] = true,
-	["default:jungle_tree"] = true,
+	["default:jungle_tree"] = false,	-- carries cocoa beans?
 
 	-- moretrees
+	-- don't cut fruit bearing trees? (yet..)
+	["moretrees:apple_tree_trunk"] = false,		-- apples 
+	["moretrees:palm_trunk"] = false,		-- coconuts
+	["moretrees:fir_trunk"] = false,		-- fir cones
+	["moretrees:cedar_trunk"] = false,		-- cedar cone
+	["moretrees:spruce_trunk"] = false,		-- spruce cone
+	["moretrees:oak_trunk"] = true,			-- acorn
+
+	["moretrees:jungletree_trunk"] = true,
 	["moretrees:rubber_tree_trunk"] = true,
-	-- ["moretrees:apple_tree_trunk"] = true,
-	["moretrees:oak_trunk"] = true,
 	["moretrees:birch_trunk"] = true,
-	["moretrees:spruce_trunk"] = true,
 	["moretrees:willow_trunk"] = true,
 	["moretrees:beech_trunk"] = true,
-	["moretrees:fir_trunk"] = true,
-	["moretrees:cedar_trunk"] = true,
-	["moretrees:palm_trunk"] = true,
 	["moretrees:sequoia_trunk"] = true,
 
 
@@ -158,8 +163,6 @@ autofarmer.harvester_dig_nodes = {
 -- TODO add plantlife mod?, look for other farming mods
 
 	-- ["ferns:fern_trunk"] = true,
-
-
 	-- plantlife
 	--["bushes:blackberry_bush"] = true,
 	--["bushes:raspberry_bush"] = true,
